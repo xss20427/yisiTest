@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <script src="/static/js/jquery.js"></script>
+    <script>
+        $(function () {
+                $("input[name='login']").click(function () {
+                    window.location.href = "index.html";
+                });
+                $("input[name='reg']").click(function () {
+                    var userName = $("input[name='userName']").val();
+                    var passwd = $("input[name='passWorld']").val();
+                    var agapasswd = $("input[name='againPass']").val();
+                    var nickName = $("input[name='nickName']").val();
+                    if (userName == "" || passwd == "" || agapasswd == "") {
+                        alert("输入不合法");
+                    } else if (passwd == agapasswd) {
+                        $.post("/user/register", {
+                            userName: userName,
+                            passWorld: agapasswd,
+                            nickName: nickName
+                        }, function (data, status) {
+                            if (data == "Succes") {
+                                alert("注册成功 ---> 前往登陆");
+                                window.location.href = "/index";
+                            } else if (data == "Faild") {
+                                alert("注册失败 账户名已存在");
+                            }
+                        });
+                    } else {
+                        alert("两次密码不一致");
+                    }
+                });
+            }
+        );
+
+    </script>
+</head>
+<body>
+<div align="center">
+    用户名：<input type="text" name="userName"><br>
+    密码： <input type="password" name="passWorld"><br>
+    确认密码:<input type="password" name="againPass"><br>
+    昵称：<input type="text" name="nickName"><br>
+    <input type="button" value="注册" name="reg"><br><br>
+    <a>已经有账号了？</a> <input type="button" value="去登陆" name="login">
+</div>
+</body>
+</html>

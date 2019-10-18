@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wz.yisitest.dao.ContextMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wz.yisitest.entity.Context">
+        <id column="id" property="id" />
+        <result column="pid" property="pid" />
+        <result column="title" property="title" />
+        <result column="context" property="context" />
+        <result column="update_date" property="updateDate" />
+        <result column="updater" property="updater" />
+        <result column="create_date" property="createDate" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, title, context, update_date, updater, create_date, creater
+    </sql>
+
+</mapper>

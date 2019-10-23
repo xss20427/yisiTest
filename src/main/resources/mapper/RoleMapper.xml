@@ -19,7 +19,7 @@
         id, name, description
     </sql>
     <select id="findRolePermission" resultType="com.wz.yisitest.entity.Permission" parameterType="int">
-        select p.name from yisi_role r,yisi_permission p,yisi_role_permission rp where rp.permission_id=p.id
+        select DISTINCT(p.name) from yisi_role r,yisi_permission p,yisi_role_permission rp where rp.permission_id=p.id
         and rp.role_id=r.id
         and r.id=${id};
     </select>

@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
+    @ResponseBody
     public String handleShiroException(Exception ex) {
         System.out.println("捕获无权限");
         return "无权限";
     }
+
     @ResponseBody
     @ExceptionHandler(AuthorizationException.class)
     public String AuthorizationException(Exception ex) {

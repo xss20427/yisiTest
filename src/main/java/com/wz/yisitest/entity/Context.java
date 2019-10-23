@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 @TableName("yisi_context")
 public class Context extends Model<Context> {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
     /**
@@ -50,7 +50,7 @@ public class Context extends Model<Context> {
     /**
      * 更新者
      */
-    private Long updater;
+    private String updater;
 
     /**
      * 创建时间
@@ -60,8 +60,7 @@ public class Context extends Model<Context> {
     /**
      * 创建者
      */
-    private Long creater;
-
+    private String creater;
 
     public Long getId() {
         return id;
@@ -103,11 +102,11 @@ public class Context extends Model<Context> {
         this.updateDate = updateDate;
     }
 
-    public Long getUpdater() {
+    public String getUpdater() {
         return updater;
     }
 
-    public void setUpdater(Long updater) {
+    public void setUpdater(String updater) {
         this.updater = updater;
     }
 
@@ -119,11 +118,11 @@ public class Context extends Model<Context> {
         this.createDate = createDate;
     }
 
-    public Long getCreater() {
+    public String getCreater() {
         return creater;
     }
 
-    public void setCreater(Long creater) {
+    public void setCreater(String creater) {
         this.creater = creater;
     }
 
@@ -135,14 +134,14 @@ public class Context extends Model<Context> {
     @Override
     public String toString() {
         return "Context{" +
-        "id=" + id +
-        ", pid=" + pid +
-        ", title=" + title +
-        ", context=" + context +
-        ", updateDate=" + updateDate +
-        ", updater=" + updater +
-        ", createDate=" + createDate +
-        ", creater=" + creater +
-        "}";
+                "id=" + id +
+                ", pid=" + pid +
+                ", title=" + title +
+                ", context=" + context +
+                ", updateDate=" + updateDate +
+                ", updater=" + updater +
+                ", createDate=" + createDate +
+                ", creater=" + creater +
+                "}";
     }
 }

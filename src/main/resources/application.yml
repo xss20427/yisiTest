@@ -1,4 +1,11 @@
 spring:
+  resources:
+    static-locations: classpath:/static/
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -14,6 +21,8 @@ spring:
       min-evictable-idle-time-millis: 30000
 server:
   port: 80
+  tomcat:
+    uri-encoding: UTF-8
 # 配置mybatis-plus
 mybatis-plus:
   # 配置扫描xml

@@ -6,10 +6,7 @@ import com.wz.yisitest.entity.Role;
 import com.wz.yisitest.entity.User;
 import com.wz.yisitest.service.impl.RoleServiceImpl;
 import com.wz.yisitest.service.impl.UserServiceImpl;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -35,7 +32,6 @@ public class CustomRealm extends AuthorizingRealm {
         String name = (String) principalCollection.getPrimaryPrincipal();
         //根据用户名去数据库查询用户信息
         User user = new User();
-        System.out.println(userService.findUserRole(name));
         user.setRoleList(userService.findUserRole(name));//查找对应的所有角色 这里只有一个角色
         //添加角色和权限
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
@@ -61,8 +57,7 @@ public class CustomRealm extends AuthorizingRealm {
         //获取用户信息
         String name = authenticationToken.getPrincipal().toString();
         User user = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getUser, name), false);
-        if (user == null) {
-            //这里返回后会报出对应异常
+        if (null == user) {
             return null;
         } else {
             //这里验证authenticationToken和simpleAuthenticationInfo的信息

@@ -1,6 +1,7 @@
 package com.wz.yisitest.config;
 
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -39,14 +40,14 @@ public class ShiroConfig {
         shiroFilterFactory.setSecurityManager(securityManager);
         Map<String, String> map = new LinkedHashMap<>();
         shiroFilterFactory.setLoginUrl("/index");
-        shiroFilterFactory.setUnauthorizedUrl("/notperm");
         // <!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-        map.put("/context/*","anon");
+        map.put("/context/*", "anon");
         map.put("/register", "anon");
         map.put("/user/login", "anon");
-        map.put("/static/**","anon");
+        map.put("/static/**", "anon");
         map.put("/user/register", "anon");
         map.put("/**", "authc");
+//        map.put("/**", "anon");
         shiroFilterFactory.setFilterChainDefinitionMap(map);
         return shiroFilterFactory;
     }
@@ -70,6 +71,11 @@ public class ShiroConfig {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
         return authorizationAttributeSourceAdvisor;
+    }
+
+    @Bean
+    public ShiroDialect shiroDialect() {
+        return new ShiroDialect();
     }
 
     @Bean

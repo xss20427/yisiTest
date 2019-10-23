@@ -1,6 +1,7 @@
 package com.wz.yisitest.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -13,7 +14,7 @@ public class WebManager {
 
     //返回登陆页面
     @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public String GetIndexHtml() {
+    public String GetIndexHtml(Model model) {
         return "index";
     }
 

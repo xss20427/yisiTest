@@ -6,7 +6,11 @@ import com.wz.yisitest.entity.Role;
 import com.wz.yisitest.entity.User;
 import com.wz.yisitest.service.impl.RoleServiceImpl;
 import com.wz.yisitest.service.impl.UserServiceImpl;
-import org.apache.shiro.authc.*;
+import com.wz.yisitest.util.JWTUtil;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -26,10 +30,15 @@ public class CustomRealm extends AuthorizingRealm {
     RoleServiceImpl roleService;
 
     @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JWTtoken;
+    }
+
+    @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("-------权限认证方法--------");
         //获取登录用户名
-        String name = (String) principalCollection.getPrimaryPrincipal();
+        String name = JWTUtil.getUserName(principalCollection.toString());
         //根据用户名去数据库查询用户信息
         User user = new User();
         user.setRoleList(userService.findUserRole(name));//查找对应的所有角色 这里只有一个角色
@@ -48,24 +57,24 @@ public class CustomRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         System.out.println("-------身份认证方法--------");
-        //加这一步的目的是在Post请求的时候会先进认证，然后在到请求
-        if (authenticationToken.getPrincipal() == null) {
-            return null;
+        String token = (String) authenticationToken.getCredentials();
+        String userName = JWTUtil.getUserName(token);
+        if (null == userName) {
+            throw new AuthenticationException("token invalid");
         }
-        //获取用户信息
-        String name = authenticationToken.getPrincipal().toString();
-        User user = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getUser, name), false);
+        User user = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getUser, userName), false);
         if (null == user) {
-            return null;
-        } else {
-            //这里验证authenticationToken和simpleAuthenticationInfo的信息
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(name, user.getPassword(), getName());
-            //更新最近登录时间
-            user.setLastLoginTime(LocalDateTime.now());
-            userService.saveOrUpdate(user);
-            return simpleAuthenticationInfo;
+            throw new AuthenticationException("User didn't existed!");
         }
+        if (!JWTUtil.verify(token, userName, user.getPassword())) {
+            System.out.println("faild");
+            throw new AuthenticationException("Username or password error");
+        }
+        //更新最近登录时间
+        user.setLastLoginTime(LocalDateTime.now());
+        userService.saveOrUpdate(user);
+        return new SimpleAuthenticationInfo(token, token, "relam");
     }
 }

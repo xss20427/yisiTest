@@ -10,14 +10,12 @@ import com.wz.yisitest.entity.Context;
 import com.wz.yisitest.service.impl.ContextServiceImpl;
 import com.wz.yisitest.util.ConverterUtil;
 import com.wz.yisitest.util.SnowFlake;
+import io.swagger.annotations.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,13 +31,20 @@ import static com.wz.yisitest.util.ConverterUtil.populate;
  * @author yisi
  * @since 2019-10-17
  */
-@Controller
+@Api(value = "/context", tags = "文章管理模块")
+@CrossOrigin
+@RestController
 @RequestMapping("/context")
 public class ContextController {
     @Autowired
     ContextServiceImpl contextService;
 
-
+    @ApiOperation(value = "添加文章", httpMethod = "POST", notes = "添加文章、评论;TypeId=-1 则为文章 其他为文章ID号")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "typeId", value = "类型ID", required = true, dataType = "long", defaultValue = "-1"),
+            @ApiImplicitParam(value = "标题", required = true, dataType = "String", name = "title"),
+            @ApiImplicitParam(name = "context", required = true, dataType = "String", value = "文章内容")}
+    )
     @RequestMapping(value = "/add")
     @RequiresPermissions("user:add")
     @ResponseBody
@@ -63,7 +68,6 @@ public class ContextController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
         return false;
     }
@@ -72,6 +76,12 @@ public class ContextController {
     @RequestMapping(value = "/modify")
     @RequiresPermissions("user:modify")
     @ResponseBody
+    @ApiOperation(value = "修改或删除文章", httpMethod = "POST", notes = "typeId 1删除 2修改")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "typeId", value = "类型ID 1删除 2修改", defaultValue = "1", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "long"),
+            @ApiImplicitParam(name = "context", value = "文章内容", dataType = "String")
+    })
     public boolean delOrUpdate(@RequestParam(value = "typeId") int typeId,
                                @RequestParam(value = "id") long id,
                                @RequestParam(value = "context", required = false, defaultValue = "") String context) {
@@ -109,9 +119,17 @@ public class ContextController {
      * @return
      */
     @RequestMapping(value = "/show")
-    @RequiresPermissions("user:show")
     @ResponseBody
-    public List<ContextDto> content(@RequestParam(value = "typeId") int typeId,
+    @RequiresPermissions("user:show")
+    @ApiOperation(value = "查询文章接口", notes = "提供查询方法", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "typeId", required = false, value = "类型ID", dataType = "int", defaultValue = "0"),
+            @ApiImplicitParam(name = "Id", required = false, value = "根据文章ID", dataType = "long"),
+            @ApiImplicitParam(name = "title", required = false, value = "根据文章标题", dataType = "String"),
+            @ApiImplicitParam(name = "creator", required = false, value = "根据创建者", dataType = "String"),
+            @ApiImplicitParam(name = "date", required = false, value = "根据日期，传入date格式：开始时间,结束时间 需要以,隔开", dataType = "String")
+    })
+    public List<ContextDto> content(@RequestParam(value = "typeId", required = false, defaultValue = "0") int typeId,
                                     @RequestParam(value = "Id", required = false, defaultValue = "-1") long id,
                                     @RequestParam(value = "title", required = false, defaultValue = "") String title,
                                     @RequestParam(value = "creator", required = false, defaultValue = "") String creator,
@@ -123,7 +141,7 @@ public class ContextController {
         //查询所有评论
         List<Context> commentList = null;
         //为了减少内存开销 typeid为4 不在此做查询
-        if (typeId != 4) {
+        if (typeId != 3) {
             contextList = contextService.list(Wrappers.<Context>lambdaQuery().eq(Context::getPid, -1));
             commentList = contextService.list(Wrappers.<Context>lambdaQuery().ne(Context::getId, -1));
         }
@@ -153,6 +171,7 @@ public class ContextController {
             //存在注入 全都有值的情况 则按照顺序
             //使用Lambda防止误写
             LambdaQueryWrapper<Context> wrapper = new LambdaQueryWrapper<Context>();
+            wrapper.eq(Context::getPid, -1);
             Page<Context> page = new Page<>(1, 10);//可以根据前端传值 题目没有要求 写死了
             boolean isSelect = true;
             if (!title.equals("")) {
@@ -187,7 +206,7 @@ public class ContextController {
         return contexts;
     }
 
-    public ContextDto getComment(Context context, List<Context> commentList) {
+    private ContextDto getComment(Context context, List<Context> commentList) {
         ContextDto contextDto = (ContextDto) populate(context, new ContextDto());
         for (Context comment : commentList) {
             //每一条评论记录

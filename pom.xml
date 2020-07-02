@@ -41,7 +41,7 @@
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <jwt.version>3.2.0</jwt.version>
         <druid.version>1.1.20</druid.version>
-        <mysql.version>5.1.48</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <mp.version>3.2.0</mp.version>
         <velocity.version>2.1</velocity.version>
         <mpstart.version>3.2.0</mpstart.version>

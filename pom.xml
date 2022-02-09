@@ -45,7 +45,7 @@
         <mp.version>3.2.0</mp.version>
         <velocity.version>2.1</velocity.version>
         <mpstart.version>3.2.0</mpstart.version>
-        <shiro.version>1.4.1</shiro.version>
+        <shiro.version>1.7.1</shiro.version>
         <log.version>1.7.28</log.version>
         <lmbok.version>1.18.10</lmbok.version>
         <fastjson.version>1.2.51</fastjson.version>

@@ -48,7 +48,7 @@
         <shiro.version>1.4.1</shiro.version>
         <log.version>1.7.28</log.version>
         <lmbok.version>1.18.10</lmbok.version>
-        <fastjson.version>1.2.51</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <jjwt.version>0.7.0</jjwt.version>
         <swagger2.version>2.9.2</swagger2.version>
     </properties>

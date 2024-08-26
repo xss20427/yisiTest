@@ -50,7 +50,7 @@
         <lmbok.version>1.18.10</lmbok.version>
         <fastjson.version>1.2.51</fastjson.version>
         <jjwt.version>0.7.0</jjwt.version>
-        <swagger2.version>2.9.2</swagger2.version>
+        <swagger2.version>2.10.0</swagger2.version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
